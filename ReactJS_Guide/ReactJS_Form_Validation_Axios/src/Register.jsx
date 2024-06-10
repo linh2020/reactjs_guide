@@ -3,8 +3,6 @@ import {
   faCheck,
   faTimes,
   faInfoCircle,
-  faL,
-  faSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -19,11 +17,11 @@ const Register = () => {
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
-  const [pwd, setPwd] = useState(false);
+  const [pwd, setPwd] = useState("");
   const [validPwd, setValidPwd] = useState(false);
   const [pwdFocus, setPwdFocus] = useState(false);
 
-  const [matchPwd, setMatchPwd] = useState(false);
+  const [matchPwd, setMatchPwd] = useState("");
   const [validMatch, setValidMatch] = useState(false);
   const [matchFocus, setMatchFocus] = useState(false);
 
@@ -54,6 +52,10 @@ const Register = () => {
     setErrMsg("");
   }, [user, pwd, matchPwd]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
+
   return (
     <section>
       <p
@@ -63,9 +65,8 @@ const Register = () => {
       >
         {errMsg}
       </p>
-
       <h1>Register</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         {/* username */}
         <label htmlFor="username">
           Username:
@@ -82,6 +83,7 @@ const Register = () => {
           ref={userRef}
           autoComplete="off"
           onChange={(e) => setUser(e.target.value)}
+          value={user}
           required
           aria-invalid={validName ? "false" : "true"}
           aria-describedby="uidnote"
@@ -113,6 +115,7 @@ const Register = () => {
           type="password"
           id="password"
           onChange={(e) => setPwd(e.target.value)}
+          value={pwd}
           required
           aria-invalid={validPwd ? "false" : "true"}
           aria-describedby="pwdnote"
@@ -136,7 +139,50 @@ const Register = () => {
         </p>
 
         {/* confirm_pwd */}
+        <label htmlFor="confirm_pwd">
+          Confirm Password
+          <FontAwesomeIcon
+            icon={faCheck}
+            className={validMatch && matchPwd ? "valid" : "hide"}
+          />
+          <FontAwesomeIcon
+            icon={faTimes}
+            className={validMatch || !matchPwd ? "hide" : "invalid"}
+          />
+        </label>
+        <input
+          type="password"
+          id="confirm_pwd"
+          onChange={(e) => setMatchPwd(e.target.value)}
+          value={matchPwd}
+          required
+          aria-invalid={validMatch ? "false" : "true"}
+          aria-describedby="confirmnote"
+          onFocus={() => setMatchFocus(true)}
+          onBlur={() => setMatchFocus(false)}
+        />
+        <p
+          id="confirmnote"
+          className={matchFocus && !validMatch ? "instructions" : "offscreen"}
+        >
+          <FontAwesomeIcon icon={faInfoCircle} /> Must match the first password
+          input field.
+        </p>
+
+        <button
+          disabled={!validName || !validPwd || !validMatch ? true : false}
+        >
+          Sign Up
+        </button>
       </form>
+      <p>
+        Already registered?
+        <br />
+        <span className="line">
+          {/*put router link here*/}
+          <a href="#">Sign In</a>
+        </span>
+      </p>
     </section>
   );
 };
